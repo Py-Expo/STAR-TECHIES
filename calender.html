@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Day Workout Challenge</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<style>
+    body {
+	background: #f5f5ff;
+	font-family: "Dosis", sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+main {
+	padding: 4rem 0.8rem;
+	@media (min-width: 850px) {
+		display: grid;
+		grid-template-columns: min-content 1fr;
+		align-items: center;
+		svg {
+			grid-column: 2;
+			grid-row: 1;
+			width: 80%;
+			max-height: 90%;
+			justify-self: flex-end;
+		}
+		h1 {
+			align-self: flex-end;
+		}
+		.workout-main,
+		aside {
+			grid-column: 1 / -1;
+		}
+	}
+	@media (min-width: 1000px) {
+		max-width: 1400px;
+		margin: auto;
+		grid-template-columns: min-content 1fr 2fr;
+
+		svg {
+			width: 170%;
+			margin-right: -30%;
+		}
+		aside {
+			grid-row: 1;
+			grid-column: 3 / 4;
+		}
+	}
+}
+
+h1 {
+	font: 700 3rem/1 "Dosis";
+	text-transform: uppercase;
+	color: #5450a9;
+	padding: 0.5rem 1rem 0.5rem 0.5rem;
+	@media (min-width: 850px) {
+		font: 700 4.8rem/1 "Dosis";
+	}
+}
+
+svg {
+	opacity: 0.65;
+	z-index: -1;
+	width: 40%;
+	margin-left: 30%;
+}
+
+.workout-main {
+	position: relative;
+}
+
+.workout-question {
+	margin: 1rem 0.5rem 0.5rem;
+	padding: 2rem;
+	font-size: 1.5rem;
+	line-height: 1.2;
+	background: #fff;
+	border-radius: 1rem;
+	box-shadow: 1px 1px 8px rgba(98, 127, 232, 0.3);
+	text-align: center;
+	color: #5753a9;
+	text-transform: uppercase;
+	letter-spacing: 0.1rem;
+	position: sticky;
+	top: 1rem;
+	z-index: 1;
+	@media (min-width: 850px) {
+		padding: 1rem 2rem;
+	}
+	> * {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+	}
+	.rest-day, .amazing-day {
+		display: none;
+	}
+	.amazing-day {
+		padding: 1.5rem;
+		text-align: center;
+	}
+	p {
+		margin-bottom: 0.6rem;
+		width: 100%;
+		@media (min-width: 850px) {
+			width: auto;
+			margin: 0;
+		}
+	}
+	a.button {
+		display: inline-block;
+		padding: 0.8rem 1.4rem;
+		background: #627fe8;
+		color: #fff;
+		margin: 0.5rem 0.3rem;
+		border-radius: 2rem;
+		cursor: pointer;
+		font-size: 1.2rem;
+		transition: 0.3s;
+		&:hover,
+		&:focus,
+		&:active {
+			box-shadow: 0 0 0 4px #b2b7e8;
+		}
+		&:nth-child(2) {
+			@media (min-width: 850px) {
+				margin-left: auto;
+			}
+		}
+		&--white {
+			background: #fff;
+			color: #627fe8;
+		}
+	}
+}
+
+.schedule-list {
+	counter-reset: day;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+	grid-auto-rows: minmax(12.5rem, auto);
+	grid-gap: 12px;
+	padding: 10px;
+	.js-day {
+		background: #f6f6ff;
+		border-radius: 10px;
+		box-shadow: 1px 1px 8px rgba(98, 127, 232, 0.4);
+		display: flex;
+		flex-wrap: wrap;
+	}
+}
+
+.workout__rest {
+	align-self: center;
+	text-align: center;
+	width: 100%;
+	font: 2rem "Dosis";
+	margin-top: 2rem;
+	color: #5c58ac;
+}
+
+.workout__info {
+	text-align: center;
+	width: 100%;
+	font: 1.3rem "Dosis";
+	color: #5c58ac;
+	margin-top: 5rem;
+	text-transform: uppercase;
+}
+
+.workout__links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding: 0.5rem 0.2rem 1.2rem;
+	position: relative;
+	width: 100%;
+	align-self: flex-end;
+	a {
+		display: inline-block;
+		border-radius: 50%;
+		width: 3.8rem;
+		height: 3.8rem;
+		overflow: hidden;
+		border: 4px solid #fff;
+		box-shadow: 2px 2px 8px rgba(98, 127, 232, 0.2);
+		margin: 0.2rem;
+		&:not(:first-child) {
+			margin-left: -1.5rem;
+		}
+		transition: 0.3s ease-in-out;
+		&:hover {
+			transform: scale(1.3);
+			z-index: 10;
+		}
+	}
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: left;
+	}
+}
+
+aside {
+	font-size: 1.5rem;
+	line-height: 1.3;
+	margin: 2rem 0.5rem;
+	text-transform: uppercase;
+	text-align: center;
+	.large {
+		display: block;
+		font: 700 3rem/1 "Audiowide";
+		margin-top: 0.5rem;
+		color: #4b5aae;
+	}
+	@media (min-width: 1000px) {
+		text-align: right;
+		align-self: flex-end;
+		justify-self: flex-end;
+		margin-bottom: 1rem;
+		max-width: 20rem;
+		.large {
+			font-size: 3.8rem;
+		}
+	}
+}
+
+.js-day {
+	position: relative;
+	&:after {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+		background: rgba(255, 255, 255, 0.7);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 5rem;
+		transform: scale(0);
+		transition: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+		background-position: center;
+    background-repeat: no-repeat;
+    background-size: 40%;
+	}
+	&[data-status="success"],
+	&[data-status="failed"] {
+		&:after {
+			transform: scale(1);
+		}
+	}
+	&[data-status="success"]:after {
+		content: "🤩";
+	}
+	&[data-status="failed"]:after {
+		content: "☹️";
+	}
+	&:before {
+		counter-increment: day;
+		content: counter(day);
+		font: 4rem/1 "Audiowide";
+		position: absolute;
+		right: 0.8rem;
+		top: 0.5rem;
+		color: #d9deff;
+		text-shadow: 2px 2px 0px #f5f5ff, 2px 2.3px 0px #d5dafe,
+			2px 3px 5px rgba(155, 168, 239, 0.5);
+	}
+}
+
+/*SVG*/
+.cls-1 {
+	fill: #9ba7ef;
+}
+.cls-2 {
+	fill: #627fe8;
+}
+.cls-3,
+.cls-7 {
+	fill: #d1d5f8;
+}
+.cls-4 {
+	fill: #b2b7e8;
+}
+.cls-7 {
+	stroke: #b2b7e8;
+	stroke-width: 0.72px;
+}
+.cls-6,
+.cls-7 {
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.cls-6 {
+	fill: #f5f5ff;
+	stroke: #627fe8;
+	stroke-width: 1.1px;
+}
+
+</style>
+<body>
+    <h1>30-Day Workout Challenge</h1>
+    <section class="workout-main">
+        <div class="workout-question">
+            <div class="workout-day">
+                <p>Did you complete the workout today?</p>
+                <a href="#" class="button js-did-workout">Yes, I did!</a>
+                <a href="#" class="button button--white js-no-workout">Oh No</a>
+            </div>
+            <div class="rest-day">
+                <p>A gift from the heavens! It's a rest day today.</p>
+                <a href="#" class="button js-did-workout">Woohoo!</a>
+            </div>
+            <div class="amazing-day">
+                <p>You did it! 🎉🎉🎉 It only took you <span class="js-day-count">30</span> days.</p>
+            </div>
+        </div>
+        <div class="schedule-list js-schedule-list"></div>
+    </section>
+    <aside>
+        <p>At this rate, you will complete the challenge in <span class="large"><span class="js-day-count">30</span> days</span>.</p>
+    </aside>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 437.79 269.44">
+        <!-- SVG paths -->
+    </svg>
+</body>
+<script>
+    var schedule = [
+	{
+		day: 1,
+		videos: [
+			{ link: "https://www.youtube.com/watch?v=Dl8N_8UtWUU",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 2,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/3Pr6n-nKfMA",
+			  image: "workout-core-arms.webp" },
+			{ link: "https://youtu.be/6TmQiugy_qw",
+			  image: "workout-line-abs.webp" },
+		]
+	},
+	{
+		day: 3,
+		videos: [
+			{ link: "https://youtu.be/004CudS_3Ew",
+			  image: "workout-2000reps.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 4,
+		videos: [
+		]
+	},
+	{
+		day: 5,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/I9nG-G4B5Bs",
+			  image: "workout-lower-burn.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 6,
+		videos: [
+			{ link: "https://youtu.be/ro0svIr1UTI",
+			  image: "workout-1000reps.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 7,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/V4sWpLJcQoU",
+			  image: "workout-standing-abs.webp" },
+			{ link: "https://youtu.be/3Pr6n-nKfMA",
+			  image: "workout-core-arms.webp" },
+		]
+	},
+	{
+		day: 8,
+		videos: [
+			{ link: "https://youtu.be/EUruBzhv7Kk",
+			  image: "workout-slim-thigh.webp" },
+			{ link: "https://youtu.be/ZveSMkUr0l0",
+			  image: "workout-lower-abs.webp" },
+			{ link: "https://youtu.be/j64BBgBGNIU",
+			  image: "workout-toned-arms.webp" },
+		]
+	},
+	{
+		day: 9,
+		videos: [
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 10,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/6TmQiugy_qw",
+			  image: "workout-line-abs.webp" },
+		]
+	},
+	{
+		day: 11,
+		videos: [
+			{ link: "https://youtu.be/EUruBzhv7Kk",
+			  image: "workout-slim-thigh.webp" },
+			{ link: "https://youtu.be/V4sWpLJcQoU",
+			  image: "workout-standing-abs.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 12,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/I9nG-G4B5Bs",
+			  image: "workout-lower-burn.webp" },
+		]
+	},
+	{
+		day: 13,
+		videos: [
+			{ link: "https://youtu.be/004CudS_3Ew",
+			  image: "workout-2000reps.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 14,
+		videos: [
+		]
+	},
+	{
+		day: 15,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/3Pr6n-nKfMA",
+			  image: "workout-core-arms.webp" },
+		]
+	},
+	{
+		day: 16,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/6TmQiugy_qw",
+			  image: "workout-line-abs.webp" },
+			{ link: "https://youtu.be/I9nG-G4B5Bs",
+			  image: "workout-lower-burn.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 17,
+		videos: [
+			{ link: "https://youtu.be/EUruBzhv7Kk",
+			  image: "workout-slim-thigh.webp" },
+			{ link: "https://youtu.be/V4sWpLJcQoU",
+			  image: "workout-standing-abs.webp" },
+			{ link: "https://youtu.be/j64BBgBGNIU",
+			  image: "workout-toned-arms.webp" },
+		]
+	},
+	{
+		day: 18,
+		videos: [
+			{ link: "https://youtu.be/ro0svIr1UTI",
+			  image: "workout-1000reps.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 19,
+		videos: [
+		]
+	},
+	{
+		day: 20,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/3Pr6n-nKfMA",
+			  image: "workout-core-arms.webp" },
+			{ link: "https://youtu.be/6TmQiugy_qw",
+			  image: "workout-line-abs.webp" },
+		]
+	},
+	{
+		day: 21,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/EUruBzhv7Kk",
+			  image: "workout-slim-thigh.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 22,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/EUruBzhv7Kk",
+			  image: "workout-slim-thigh.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+		]
+	},
+	{
+		day: 23,
+		videos: [
+			{ link: "https://youtu.be/ro0svIr1UTI",
+			  image: "workout-1000reps.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 24,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/I9nG-G4B5Bs",
+			  image: "workout-lower-burn.webp" },
+		]
+	},
+	{
+		day: 25,
+		videos: [
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 26,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/2pLT-olgUJs",
+			  image: "workout-abs.webp" },
+			{ link: "https://youtu.be/3Pr6n-nKfMA",
+			  image: "workout-core-arms.webp" },
+		]
+	},
+	{
+		day: 27,
+		videos: [
+			{ link: "https://youtu.be/2MoGxae-zyo",
+			  image: "workout-lose-weight.webp" },
+			{ link: "https://youtu.be/V4sWpLJcQoU",
+			  image: "workout-standing-abs.webp" },
+			{ link: "https://youtu.be/ZveSMkUr0l0",
+			  image: "workout-lower-abs.webp" },
+		]
+	},
+	{
+		day: 28,
+		videos: [
+			{ link: "https://youtu.be/004CudS_3Ew",
+			  image: "workout-2000reps.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+	{
+		day: 29,
+		videos: [
+		]
+	},
+	{
+		day: 30,
+		videos: [
+			{ link: "https://youtu.be/EUruBzhv7Kk",
+			  image: "workout-slim-thigh.webp" },
+			{ link: "https://youtu.be/ZveSMkUr0l0",
+			  image: "workout-lower-abs.webp" },
+			{ link: "https://youtu.be/j64BBgBGNIU",
+			  image: "workout-toned-arms.webp" },
+			{ link: "https://youtu.be/L_xrDAtykMI",
+			  image: "workout-flexibility.webp" },
+		]
+	},
+];
+
+$(document).ready(function () {
+	generateCalendar();
+	setStatus();
+});
+
+function generateCalendar() {
+	var scheduleList = $(".js-schedule-list");
+
+	$.each(schedule, function (key, value) {
+		var day = value.day;
+		var videos = value.videos;
+		var status = value.status;
+		if (videos.length == 0) {
+			var restHTML =
+				"<div class='js-day' data-status='false'><div class='workout__rest'>REST</div></div>";
+			scheduleList.append(restHTML);
+		} else if (videos.length > 0) {
+			
+			var allVideos = "";
+			var grammar = (videos.length === 1) ? 'video' :'videos';
+			
+			$.map(videos, function (key, value) {
+				var videoHTML = '<a href="' + key.link + '" target="_blank">'+ '<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/567707/' + key.image + '" alt="Workout Video Image"/></a>';
+				allVideos = allVideos + videoHTML;
+			});
+			
+			var workHTML =
+				"<div class='js-day' data-status='false'><div class='workout__info'>" +
+				videos.length + ' ' + grammar + 
+				"</div><div class='workout__links'>"+ allVideos + "</div></div>";
+			
+			scheduleList.append(workHTML);
+			
+		}
+	});
+}
+
+function setStatus() {
+	$(".js-did-workout").on("click", function () {
+		var currentDay = $(".js-schedule-list").find(
+			'.js-day[data-status="false"]:first'
+		);
+		currentDay.attr("data-status", "success");
+		schedule.shift();
+		checkNextDay();
+	});
+
+	$(".js-no-workout").on("click", function () {
+		var currentDay = $(".js-schedule-list").find(
+			'.js-day[data-status="false"]:first'
+		);
+		currentDay.attr("data-status", "failed");
+		var originalDay = currentDay.data("day");
+		updateCalendar(originalDay);
+		updateDays();
+		checkNextDay();
+	});
+}
+
+function updateCalendar(day) {
+	var scheduleList = $(".js-schedule-list");
+	scheduleList.append('<div class="js-day" data-status="false"></div>');
+
+	$.each(schedule, function (key, value) {
+		var day = value.day;
+		var videos = value.videos;
+		
+		var daysDiv = $('[data-status="false"]').eq(key);
+		
+		if (videos.length == 0) {
+			$(daysDiv).html("<div class='workout__rest'>REST</div></div>");
+		} else if (videos.length > 0) {
+			
+			var allVideos = "";
+			var grammar = (videos.length === 1) ? 'video':'videos';
+			
+			$.map(videos, function (key, value) {
+				var videoHTML = '<a href="' + key.link + '" target="_blank">'+ '<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/567707/' + key.image + '" alt="Workout Video Image"/></a>';
+				allVideos = allVideos + videoHTML;
+			});
+			
+			$(daysDiv).html("<div class='workout__info'>" +
+				videos.length + ' ' + grammar +
+				"</div><div class='workout__links'>" + allVideos + "</div>");
+		}
+	});
+}
+
+function updateDays() {
+	$(".js-day-count").text($(".js-day").length);
+}
+
+
+function checkNextDay() {
+	var dayAfter =  $('.js-day[data-status="false"]').first();
+	
+	if ($('.js-day[data-status="false"]').length == 0) {
+		$('.rest-day, .workout-day').css('display', 'none');
+		$('.amazing-day').css('display','flex'); 
+	} else if ($('.workout__rest', dayAfter).length) {
+		$('.rest-day').css('display', 'flex');
+		$('.workout-day').css('display','none');
+	} else {
+		$('.rest-day').css('display','none');
+		$('.workout-day').css('display', 'flex');
+	}
+}
+</script>
+</html>
