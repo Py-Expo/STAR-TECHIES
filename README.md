@@ -50,9 +50,8 @@ Additional scripts
 
 A working demonstration of the project is available here:
 
-```
 https://drive.google.com/file/d/1ekHD717bvXr4grABXb3FSbCGRupebTqS/view
-```
+
 
 
 ## Hackathon Context
